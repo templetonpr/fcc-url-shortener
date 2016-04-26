@@ -1,0 +1,23 @@
+{
+  "name": "fcc-url-shortener",
+  "version": "1.0.0",
+  "description": "URL Shortener Microservice",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/templetonpr/fcc-url-shortener.git"
+  },
+  "author": "Patrick Templeton",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/templetonpr/fcc-url-shortener/issues"
+  },
+  "homepage": "https://github.com/templetonpr/fcc-url-shortener#readme",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
+}
