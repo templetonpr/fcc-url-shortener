@@ -25,6 +25,10 @@
 <body>
   <h1>URL Shortener</h1>
   <hr>
+  <form action="/new" name="url-form" method="get">
+    <input type="url" name="original-url" id="original-url" placeholder="http://www.example.com/your/url/goes/here.php" required>
+    <input type="submit" name="submit" value="Submit">
+  </form>
   <p>Please see <a href='https://github.com/templetonpr/fcc-url-shortener'>here</a> for the code and more info.</p>
 </body>
 </html>

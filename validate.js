@@ -14,10 +14,15 @@ exports.checkUrl = (testUrl, callback) => {
       path: url.parse(testUrl).pathname
     };
 
-    http.request(options, (res) => {
-      callback(null, res.statusCode);
+    let code = 500;
+    let req = http.request(options, (res) => {
+      code = res.statusCode;
+      callback(null, code);
     });
+    req.end();
+
   } else {
+    // validator says testUrl is an invalid url
     let error = new Error("Invalid URL");
     callback(error);
   }

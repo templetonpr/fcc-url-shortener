@@ -12,16 +12,22 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html');
 })
 
-.get('/new/:url', (req, res) => {
-  let url = req.params.url; // @todo unencode this
+.get('/new', (req, res) => {
+  let url = decodeURIComponent(req.query["original-url"]);
+  console.log("URL: " + url);
 
   validate.checkUrl(url, (err, status) => {
-    if (err) {
+    if (err) { // if validator says the url is invalid
       console.log(err);
       res.send("That URL isn't valid. Please make sure it's correct and try again.");
+
     } else if (status === 200) {
+
+      // url shortening stuff will go here
+      
       res.send("Got " + url);
-    } else {
+
+    } else { // if http request returned with something other than 200
       console.log(status);
       res.send("There was a problem checking the URL. Please try again.");
     }
