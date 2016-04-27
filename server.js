@@ -3,16 +3,23 @@
 let express = require('express');
 let validate = require('./validate');
 let pg = require('pg');
+var favicon = require('serve-favicon');
 
 let app = express();
+app.use(favicon(__dirname + '/public/favicon.ico'));
+
 
 let conString = process.env.DATABASE_URL || "postgres://test:test@localhost/test_db";
 
-app.get('/', (req, res) => {// home page
+app.all((req, res, next) => {
+    next();
+})
+
+.get('/', (req, res, next) => {// home page
   res.sendFile(__dirname + '/public/index.html');
 })
 
-.get('/new', (req, res) => {
+.get('/new', (req, res, next) => {
   let url = decodeURIComponent(req.query["original-url"]);
 
   validate.checkUrl(url, (err, status) => {
@@ -62,7 +69,7 @@ app.get('/', (req, res) => {// home page
   });
 })
 
-.get('/:short_code', (req, res) => {
+.get('/:short_code', (req, res, next) => {
   let shortCode = req.params["short_code"];
 
   pg.connect(conString, (err, client, done) => {
