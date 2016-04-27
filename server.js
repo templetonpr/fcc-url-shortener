@@ -1,9 +1,10 @@
 "use strict";
 
-let express = require('express');
-let validate = require('./validate');
 let pg = require('pg');
+let express = require('express');
 var favicon = require('serve-favicon');
+
+let validate = require('./validate');
 
 let app = express();
 app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -44,7 +45,7 @@ app.all((req, res, next) => {
           done();
 
           if (result.rowCount) { // url is already in db
-            res.json({
+            res.status(200).json({
               original_url: result.rows[0].url,
               short_code: result.rows[0].p_id
             });
@@ -53,7 +54,7 @@ app.all((req, res, next) => {
             client.query('INSERT INTO urls (url) VALUES ($1) RETURNING *', [url], (err, result) => {
               if (handleError(err)) return; // handle error from the query
               done();
-              res.json({
+              res.status(201).json({
                 original_url: result.rows[0].url,
                 short_code: result.rows[0].p_id
               });
@@ -64,7 +65,7 @@ app.all((req, res, next) => {
 
     } else { // if http request returned with something other than 200
       console.log(status);
-      res.send("There was a problem checking the URL. Please try again."); // make this send an error json
+      res.status(400).json({error: "There was a problem checking the URL. Please make sure it is correct and try again."});
     }
   });
 })
@@ -77,7 +78,7 @@ app.all((req, res, next) => {
     let handleError = (err) => {
       if (!err) return false; // no error, continue with the request
       if (client) done(client); // remove client from connection pool
-      res.status(500).send('An error occurred. Please try again in a few moments.');
+      res.status(500).json({error: "Internal server error. Please try again in a moment."});
       return true;
     };
 
@@ -87,13 +88,9 @@ app.all((req, res, next) => {
       if (handleError(err)) return; // handle error from the query
       done();
       if (result.rowCount) { // url is already in db
-        res.json({
-          original_url: result.rows[0].url,
-          short_code: result.rows[0].p_id
-        });
+        res.redirect(result.rows[0].url)
       } else { // url is new
-        // return error
-        res.send("URL doesn't exist.");
+        res.status(400).json({error: "URL doesn't exist."}); // return error
       }
     });
   });
