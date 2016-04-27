@@ -2,21 +2,21 @@
 
 let pg = require('pg');
 let express = require('express');
-var favicon = require('serve-favicon');
+let favicon = require('serve-favicon');
 
 let validate = require('./validate');
 
 let app = express();
+app.disable('x-powered-by');
 app.use(favicon(__dirname + '/public/favicon.ico'));
-
 
 let conString = process.env.DATABASE_URL || "postgres://test:test@localhost/test_db";
 
 app.all((req, res, next) => {
-    next();
+  next();
 })
 
-.get('/', (req, res, next) => {// home page
+.get('/', (req, res, next) => { // home page
   res.sendFile(__dirname + '/public/index.html');
 })
 
@@ -24,48 +24,40 @@ app.all((req, res, next) => {
   let url = decodeURIComponent(req.query["original-url"]);
 
   validate.checkUrl(url, (err, status) => {
-    if (err) { // if validator says the url is invalid
+    if (err) { // validator says the url is invalid
       console.log(err);
-      res.send("That URL isn't valid. Please make sure it's correct and try again."); // make this send an error json
-    } else if (status === 200 || 301 || 302) {
+      res.status(400).json({error: "That URL isn't valid. Please make sure it's correct and try again."});
 
+    } else if (status >= 400 && status < 500) { // there was a problem visiting the url
+      console.log(status);
+      res.status(400).json({error: "There was a problem checking the URL. Please make sure it is correct and try again. Status code: " + status});
+
+    } else { // validation went okay
       pg.connect(conString, (err, client, done) => {
-
-        let handleError = (err) => {
-          if (!err) return false; // no error, continue with the request
-          if (client) done(client); // remove client from connection pool
-          res.status(500).send('An error occurred. Please try again in a few moments.');
-          return true;
-        };
-
-        if (handleError(err)) return; // handle error from the connection
+        if (handleDbError(err)) return; // handle error from the connection
 
         client.query('SELECT * FROM urls WHERE url=$1', [url], (err, result) => {
-          if (handleError(err)) return; // handle error from the query
-          done();
-
+          if (handleDbError(err)) return; // handle error from the query
           if (result.rowCount) { // url is already in db
+            done();
             res.status(200).json({
               original_url: result.rows[0].url,
               short_code: result.rows[0].p_id
             });
-
           } else { // url is new
-            client.query('INSERT INTO urls (url) VALUES ($1) RETURNING *', [url], (err, result) => {
-              if (handleError(err)) return; // handle error from the query
+
+            client.query('INSERT INTO urls (url, created_on, access_count) VALUES ($1, $2, 0) RETURNING *', [url, Date.now().toString()], (err, result) => {
+              if (handleDbError(err)) return; // handle error from the query
               done();
               res.status(201).json({
                 original_url: result.rows[0].url,
                 short_code: result.rows[0].p_id
               });
             });
+
           }
         });
       });
-
-    } else { // if http request returned with something other than 200
-      console.log(status);
-      res.status(400).json({error: "There was a problem checking the URL. Please make sure it is correct and try again."});
     }
   });
 })
@@ -73,25 +65,26 @@ app.all((req, res, next) => {
 .get('/:short_code', (req, res, next) => {
   let shortCode = req.params["short_code"];
 
-  pg.connect(conString, (err, client, done) => {
-
-    let handleError = (err) => {
-      if (!err) return false; // no error, continue with the request
-      if (client) done(client); // remove client from connection pool
-      res.status(500).json({error: "Internal server error. Please try again in a moment."});
-      return true;
-    };
-
-    if (handleError(err)) return; // handle error from the connection
+  pg.connect(conString, function (err, client, done) {
+    if (handleDbError(err)) return; // handle error from the connection
 
     client.query('SELECT * FROM urls WHERE p_id=$1', [shortCode], (err, result) => {
-      if (handleError(err)) return; // handle error from the query
-      done();
+      if (handleDbError(err)) return; // handle error from the query
+
       if (result.rowCount) { // url is already in db
-        res.redirect(result.rows[0].url)
+        let url = result.rows[0].url;
+        let newCount = result.rows[0]["access_count"] + 1;
+        
+        client.query('UPDATE urls SET access_count = $1 WHERE p_id = $2', [ newCount, shortCode ], (err, result) => {
+          if (handleDbError(err)) return;
+          done();
+          return res.redirect(url);
+        });
+
       } else { // url is new
-        res.status(400).json({error: "URL doesn't exist."}); // return error
+        res.status(404).json({error: "URL doesn't exist."});
       }
+
     });
   });
 });
@@ -101,3 +94,11 @@ let port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log("Server is running on port " + port + "\n");
 });
+
+let handleDbError = (err, client) => {
+  if (!err) {
+    return false; // no error, continue with the request
+  } else if (client) done(client); // remove client from connection pool
+  res.status(500).json({error: "Internal server error. Please try again in a moment."});
+  return true;
+};

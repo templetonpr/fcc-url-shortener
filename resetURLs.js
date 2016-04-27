@@ -8,7 +8,13 @@ console.log("Dropping table and recreating...");
 
 client.connect( (err) => {
   if (err) return console.err('Could not connect to postgres', err);
-  client.query("DROP TABLE IF EXISTS urls; CREATE TABLE urls (p_id SERIAL PRIMARY KEY,url TEXT);", (err, result) => {
+  client.query(
+    "DROP TABLE IF EXISTS urls;\
+    CREATE TABLE urls (\
+    p_id SERIAL PRIMARY KEY,\
+    url TEXT NOT NULL,\
+    created_on CHAR(13) NOT NULL,\
+    access_count INTEGER NOT NULL);", (err, result) => {
     if (err) return console.err('Error running query', err);
     client.end();
   });
