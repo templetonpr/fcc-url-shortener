@@ -19,6 +19,7 @@
   "homepage": "https://github.com/templetonpr/fcc-url-shortener#readme",
   "dependencies": {
     "express": "^4.13.4",
+    "pg": "^4.5.4",
     "validator": "^5.2.0"
   }
 }
