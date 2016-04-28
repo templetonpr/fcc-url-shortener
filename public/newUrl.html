@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>URL Shortener</title>
+  <link rel="shortcut icon" href="./favicon.ico">
+  <style type="text/css">
+    html {
+      padding: 0 5%;
+      line-height: 1.5;
+    }
+    h1 {
+      text-align: center;
+    }
+    pre {
+      color: darkred;
+      font-weight: bold;
+      background-color: #eee;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <h1>URL Shortener</h1>
+  <hr>
+  <form action="/new" name="url-form" method="post">
+    <input type="url" name="original-url" id="original-url" placeholder="http://www.example.com/your/url/goes/here.php" required>
+    <input type="submit">
+  </form>
+  <p>Please see <a href='https://github.com/templetonpr/fcc-url-shortener'>here</a> for the code and more info.</p>
+</body>
+</html>

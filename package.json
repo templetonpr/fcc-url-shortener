@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/templetonpr/fcc-url-shortener#readme",
   "dependencies": {
+    "body-parser": "^1.15.0",
     "express": "^4.13.4",
     "pg": "^4.5.4",
     "serve-favicon": "^2.3.0",
