@@ -21,15 +21,35 @@
       background-color: #eee;
       display: inline-block;
     }
+    input {
+      display: block;
+    }
   </style>
 </head>
 <body>
   <h1>URL Shortener</h1>
   <hr>
   <form action="/new" name="url-form" method="post">
-    <input type="url" name="original-url" id="original-url" placeholder="http://www.example.com/your/url/goes/here.php" required>
-    <input type="submit">
+    <input type="text" name="original-url" id="originalUrl" placeholder="http://www.example.com/your/url/goes/here.php" value="http://www.google.com" required>
+    <input type="submit" id="submitButton">
   </form>
+  <p>Your shortened url is: <a id="showShortCode">---</a></p>
   <p>Please see <a href='https://github.com/templetonpr/fcc-url-shortener'>here</a> for the code and more info.</p>
+  <script type="text/javascript">
+    document.getElementById('submitButton').addEventListener('click', postNewUrl);
+
+    function postNewUrl (event) {
+      event.preventDefault();
+      var originalUrl = document.getElementById('originalUrl').value;
+      console.log("Original url: " + originalUrl);
+      var xhttp = new XMLHttpRequest();
+      xhttp.open('POST', '/new', false);
+      xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      xhttp.send("original-url=" + originalUrl);
+      var response = JSON.parse(xhttp.responseText)["short_url"];
+      document.getElementById('showShortCode').textContent = response;
+      document.getElementById('showShortCode').href = response;
+    }
+  </script>
 </body>
 </html>

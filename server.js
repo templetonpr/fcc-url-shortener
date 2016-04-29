@@ -101,10 +101,11 @@ app.listen(port, () => {
   console.log("Server is running on port " + port + "\n");
 });
 
-let handleDbError = (err, client) => {
+let handleDbError = (err, client, res) => {
   if (!err) {
     return false; // no error, continue with the request
   } else if (client) done(client); // remove client from connection pool
+  console.error(err);
   res.status(500).json({error: "Internal server error. Please try again in a moment."});
   return true;
 };
