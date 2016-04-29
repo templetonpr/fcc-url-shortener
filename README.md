@@ -16,6 +16,7 @@ Robot users:
 - POST a valid URL to /new in the format `{"original_url": "your url here"}`
 - The server will respond with `{ "original_url": "your original url", "short_url": "your shortened url"}`
 - In the event of an error, the server will respond with `{"error": "Error message here"}`
+
 ---
 
 ### To Do
