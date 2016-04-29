@@ -1,7 +1,7 @@
 # URL Shortener
 Microservice to shorten URLs using Node, Express, and PostgreSQL
 
-Live version here: [not yet implemented]
+Live version here: https://templetonpr-fcc-link-shortener.herokuapp.com/
 
 Note: This is a *demonstration* project. Bookmark at your own peril.
 
@@ -21,6 +21,7 @@ Robot users:
 
 ### To Do
 
+- [x] Deploy to Heroku
 - [ ] Tests
 - [ ] Make index.html and newUrl.html easier on the eyes with some better styling
 - [ ] Some kind of Stats thing?
