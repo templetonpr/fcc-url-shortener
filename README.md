@@ -1,7 +1,8 @@
 # URL Shortener
 Microservice to shorten URLs using Node, Express, and PostgreSQL
 
-Live version here:
+Live version here: [not yet implemented]
+
 Note: This is a *demonstration* project. Bookmark at your own peril.
 
 ---
