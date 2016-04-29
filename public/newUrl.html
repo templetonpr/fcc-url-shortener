@@ -24,13 +24,16 @@
     input {
       display: block;
     }
+    #originalUrl {
+      width: 50%;
+    }
   </style>
 </head>
 <body>
   <h1>URL Shortener</h1>
   <hr>
   <form action="/new" name="url-form" method="post">
-    <input type="text" name="original_url" id="originalUrl" placeholder="http://www.example.com/your/url/goes/here.php" value="http://www.google.com" required>
+    <input type="url" name="original_url" id="originalUrl" placeholder="http://www.example.com/your/url/goes/here.php" required>
     <input type="submit" id="submitButton">
   </form>
   <p>Your shortened url is: <a id="showShortCode" target="_blank">---</a></p>
