@@ -30,10 +30,11 @@
   <h1>URL Shortener</h1>
   <hr>
   <form action="/new" name="url-form" method="post">
-    <input type="text" name="original-url" id="originalUrl" placeholder="http://www.example.com/your/url/goes/here.php" value="http://www.google.com" required>
+    <input type="text" name="original_url" id="originalUrl" placeholder="http://www.example.com/your/url/goes/here.php" value="http://www.google.com" required>
     <input type="submit" id="submitButton">
   </form>
-  <p>Your shortened url is: <a id="showShortCode">---</a></p>
+  <p>Your shortened url is: <a id="showShortCode" target="_blank">---</a></p>
+  <p><b>Disclaimer:</b> This is a <em>demonstration</em> project. Bookmark shortened links at your own peril.</p>
   <p>Please see <a href='https://github.com/templetonpr/fcc-url-shortener'>here</a> for the code and more info.</p>
   <script type="text/javascript">
     document.getElementById('submitButton').addEventListener('click', postNewUrl);
@@ -45,7 +46,7 @@
       var xhttp = new XMLHttpRequest();
       xhttp.open('POST', '/new', false);
       xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      xhttp.send("original-url=" + originalUrl);
+      xhttp.send("original_url=" + originalUrl);
       var response = JSON.parse(xhttp.responseText)["short_url"];
       document.getElementById('showShortCode').textContent = response;
       document.getElementById('showShortCode').href = response;

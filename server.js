@@ -29,7 +29,7 @@ app.get('/*', (req, res, next) => {
 })
 
 .post('/new', (req, res) => {
-  let url = req.body["original-url"];
+  let url = req.body["original_url"];
 
   validate.checkUrl(url, (err, status) => {
     if (err) { // validator says the url is invalid
@@ -48,7 +48,7 @@ app.get('/*', (req, res, next) => {
             done();
             res.status(200).json({
               original_url: result.rows[0].url,
-              short_url: req.protocol + '://' + req.hostname + '/' + result.rows[0].p_id
+              short_url: getHostname(req, result)
             });
 
           } else { // url is new
@@ -57,7 +57,7 @@ app.get('/*', (req, res, next) => {
               done();
               res.status(201).json({
                 original_url: result.rows[0].url,
-                short_url: req.protocol + '://' + req.hostname + '/' + result.rows[0].p_id
+                short_url: getHostname(req, result)
               });
             });
           }
@@ -109,3 +109,10 @@ let handleDbError = (err, client, res) => {
   res.status(500).json({error: "Internal server error. Please try again in a moment."});
   return true;
 };
+
+let getHostname = (req, result) => {
+  let hostname = req.protocol + "://" + req.hostname;
+  if (req.hostname === "localhost") hostname += ":" + port;
+  hostname += "/" + result.rows[0].p_id;
+  return hostname;
+}
