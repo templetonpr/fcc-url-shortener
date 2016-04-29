@@ -21,6 +21,8 @@ Robot users:
 
 ### To Do
 
-[ ] Tests
-[ ] Make index.html and newUrl.html easier on the eyes with some better styling
-[ ] Some kind of Stats thing?
+- [ ] Tests
+
+- [ ] Make index.html and newUrl.html easier on the eyes with some better styling
+
+- [ ] Some kind of Stats thing?
