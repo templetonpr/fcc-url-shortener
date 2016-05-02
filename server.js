@@ -4,6 +4,7 @@ let pg = require('pg');
 let express = require('express');
 let favicon = require('serve-favicon');
 let bodyParser = require('body-parser');
+let morgan = require('morgan');
 
 let validate = require('./validate');
 
@@ -12,6 +13,7 @@ app.disable('x-powered-by');
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(morgan('short'));
 
 let conString = process.env.DATABASE_URL || "postgres://test:test@localhost/test_db";
 
